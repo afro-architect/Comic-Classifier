@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #f4f0e6;
+  --paper-2: #efe9db;
+  --ink: #191713;
+  --red-ink: #b8382a;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---- paper: turbulence grain + a long soft fold shadow ---- */
+.paper-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(115% 80% at 12% 0%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 60%),
+    linear-gradient(96deg, rgba(25, 23, 19, 0.055) 0 1px, rgba(255, 255, 255, 0.5) 1px 3px, rgba(25, 23, 19, 0) 4px),
+    radial-gradient(120% 90% at 88% 100%, rgba(25, 23, 19, 0.08), rgba(25, 23, 19, 0) 55%);
+  background-size: auto, 100% 100%, auto;
+}
+.paper-grain {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+::selection {
+  background: rgba(184, 56, 42, 0.22);
+}
+
+/* ---- hand-sketched focus ring ---- */
+:focus-visible {
+  outline: none;
+}
+.focusable {
+  position: relative;
+}
+.focusable:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: -7px -9px -9px -7px;
+  border: 2.5px solid var(--red-ink);
+  border-radius: 42% 58% 46% 54% / 55% 45% 60% 40%;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+/* ---- scrollbars: thin ink ---- */
+.ink-scroll::-webkit-scrollbar {
+  height: 9px;
+  width: 9px;
+}
+.ink-scroll::-webkit-scrollbar-thumb {
+  background: rgba(25, 23, 19, 0.35);
+  border-radius: 9px;
+}
+.ink-scroll::-webkit-scrollbar-track {
+  background: rgba(25, 23, 19, 0.07);
+}
+
+/* ---- ink draw-on animation for freshly rendered panels ---- */
+@keyframes inkIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) rotate(-0.4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ink-in {
+  animation: inkIn 420ms var(--ease) both;
+}
+
+@keyframes scribble {
+  0% { stroke-dashoffset: 900; }
+  100% { stroke-dashoffset: 0; }
+}
+.scribble path {
+  stroke-dasharray: 900;
+  animation: scribble 1.5s linear infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-0.6deg); }
+  50% { transform: rotate(0.6deg); }
+}
+.wiggle {
+  animation: wiggle 3.4s ease-in-out infinite;
+}
+
+@keyframes blinkRec {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+.rec-dot {
+  animation: blinkRec 900ms steps(2, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.press:active {
+  transform: translate(1px, 1.5px) rotate(-0.35deg);
+}
+.press {
+  transition: transform 90ms var(--ease);
+}
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
